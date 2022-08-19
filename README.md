@@ -3,17 +3,16 @@ Learn Dowload Manager
 
 [Mục lục]
 
- [  -- 1. Khái niệm 
+    -- 1. Khái niệm 
     -- 2. Permissions 
     -- 3. Generate URI 
     -- 4. Tạo instance cho DownloadManager
     -- 5. Dowload data
     -- 6. Check Download Status
     -- 7. Cancel downloads
-    -- 8. Broadcast receiver    ]
+    -- 8. Broadcast receiver    
  
 # 1.[Khái niệm]
-[--------------------------------------------------------------------------------------------------]
 _ + Download manager là một service hệ thống dùng để xử lý các long-running HTTP downloads. Client 
 có thể request một URI được download cho một file đích cụ thể. Download manager sẽ thực hiện 
 download dưới background, nó quan tâm đến các HTTP interactions, retrying downloads sau khi có một 
@@ -25,29 +24,27 @@ từ download UI.
 
 _ + Thể hiện của class phải được lấy từ Context.getSystemService(Class) với argument là 
 DownloadManager.class hoặc Context.getSystemService(String)với argument là Context.DOWNLOAD_SERVICE.
-[--------------------------------------------------------------------------------------------------]
 
 # 2.[Permissions]
-_ [internet]( <uses-permission android:name="android.permission.INTERNET" /> )
-_ [Network]( <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> )
-_ [External]( <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> )
+_ <uses-permission android:name="android.permission.INTERNET" />
+_ <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
+_ <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
 
 # 3.[Generate URI]
 
- # val imageUri = Uri.parse("http://commonsware.com/misc/test.mp4")
+  val imageUri = Uri.parse("http://commonsware.com/misc/test.mp4")
  
 # 4.[Tạo instance cho DownloadManager]
-[--------------------------------------------------------------------------------------------------]
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //Instances of download manager
         downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
-[--------------------------------------------------------------------------------------------------]
 
 # 5.[ Dowload data]
-[--------------------------------------------------------------------------------------------------]
+
 private fun startDownload(uri: Uri): Long {
 
         val downloadReference: Long
@@ -71,16 +68,15 @@ private fun startDownload(uri: Uri): Long {
 
         return downloadReference
     }
-#--------------------------------------------------------------------------------------------------#
+
 [downloadReference]: Nó là id duy nhất để chỉ ra một download request.
 [request]: Một request mới được tạo bằng việc sử dụng DownloadManager.Request(uri).
 request.setDestinationInExternalFilesDir: Dùng để save file vào external downloads folder.
 [downloadManager.enqueue(request)]: Enqueue một download mới tương ứng với request. Quá trình tải 
 xuống sẽ tự động bắt đầu khi download manager sẵn sàng thực hiện và kết nối khả dụng.
-[--------------------------------------------------------------------------------------------------]
 
 # 6.[Check Download Status]
-[--------------------------------------------------------------------------------------------------]
+
 private fun getStatusMessage(downloadId: Long): String {
 
         val query = DownloadManager.Query()
@@ -94,12 +90,12 @@ private fun getStatusMessage(downloadId: Long): String {
         }
         return "NO_STATUS_INFO"
     }
-#--------------------------------------------------------------------------------------------------#
+    
 DownloadManager.Query(): Được dùng để filter các download manager queries. Ở đây, ta cung cấp một 
 downloadId trong setFilterById() để chỉ include các downloads với Id được cho.
 downloadManager.query(query): Dùng để truy vấn download manager về downloads được request.
 Cursor: Cursor trỏ đến các thông tin của downloads, với các cột bao gồm tất cả hằng số COLUMN_*.
-#--------------------------------------------------------------------------------------------------#
+
 private fun downloadStatus(cursor: Cursor): String {
 
         // column for download  status
@@ -143,12 +139,9 @@ private fun downloadStatus(cursor: Cursor): String {
 
         return "Download Status: $statusText, $reasonText"
     }
-[--------------------------------------------------------------------------------------------------]
 
 # 7.[Cancel downloads]
 downloadManager.remove(downloadId);
-
-[--------------------------------------------------------------------------------------------------]
 
 # 8.[ Broadcast receiver]
 
@@ -180,15 +173,12 @@ long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
         unregisterReceiver(onNotificationClick)
     }
 
-#--------------------------------------------------------------------------------------------------#
 
 [ACTION_DOWNLOAD_COMPLETE]: Broadcast intent action được gửi bởi download manager khi một download 
 complete.
 [ACTION_NOTIFICATION_CLICKED]: Broadcast intent action được gửi bởi download manager khi user clicks 
 vào running download, từ system notification hoặc từ downloads UI. referenceId: Dùng để xác định 
 download nào đã hoàn thành.
-
-[--------------------------------------------------------------------------------------------------]
 
 
 
